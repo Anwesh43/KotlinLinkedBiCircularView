@@ -37,7 +37,7 @@ class LinkedBiCircularView(ctx : Context) : View(ctx) {
         val scales : Array<Float> = arrayOf(0f, 0f, 0f, 0f)
 
         fun update(stopcb : (Float) -> Unit) {
-            scales[j] += 0.1f * dir
+            scales[j] += 0.05f * dir
             if (Math.abs(prevScale - scales[j]) > 1) {
                 scales[j]  = prevScale + dir
                 j += dir.toInt()

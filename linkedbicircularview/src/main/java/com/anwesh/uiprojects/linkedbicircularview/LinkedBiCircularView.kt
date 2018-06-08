@@ -4,6 +4,7 @@ package com.anwesh.uiprojects.linkedbicircularview
  * Created by anweshmishra on 08/06/18.
  */
 
+import android.app.Activity
 import android.content.Context
 import android.graphics.*
 import android.view.View
@@ -185,6 +186,14 @@ class LinkedBiCircularView(ctx : Context) : View(ctx) {
             lcb.startUpdating {
                 animator.start()
             }
+        }
+    }
+
+    companion object {
+        fun create(activity : Activity) : LinkedBiCircularView{
+            val view : LinkedBiCircularView = LinkedBiCircularView(activity)
+            activity.setContentView(view)
+            return view
         }
     }
 }

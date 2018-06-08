@@ -103,6 +103,8 @@ class LinkedBiCircularView(ctx : Context) : View(ctx) {
             val h : Float = canvas.height.toFloat()
             val gap : Float = (0.9f * w / LBC_NODES)
             paint.strokeWidth = Math.min(w, h) / 50
+            paint.strokeCap = Paint.Cap.ROUND
+            paint.style = Paint.Style.STROKE
             canvas.save()
             canvas.translate(w/20 + i * gap, h / 2)
             for (i in 0..1) {
@@ -159,5 +161,29 @@ class LinkedBiCircularView(ctx : Context) : View(ctx) {
         fun startUpdating(startcb : () -> Unit) {
             curr.startUpdating(startcb)
         }
+    }
+
+    data class LBCRenderer(var view : LinkedBiCircularView) {
+
+        private val animator : Animator = Animator(view)
+
+        private val lcb : LinkedBiCircularShape = LinkedBiCircularShape(0)
+
+        fun render(canvas : Canvas, paint : Paint) {
+            canvas.drawColor(Color.parseColor("#212121"))
+            lcb.draw(canvas, paint)
+            animator.animate {
+                lcb.update {
+                    animator.stop()
+                }
+            }
+        }
+
+        fun handleTap() {
+            lcb.startUpdating {
+                animator.start()
+            }
+        }
+
     }
 }

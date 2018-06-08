@@ -136,4 +136,28 @@ class LinkedBiCircularView(ctx : Context) : View(ctx) {
         }
     }
 
+    data class LinkedBiCircularShape (var i : Int) {
+
+        private var curr : LBCNode = LBCNode(0)
+
+        private var dir : Int = 1
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            paint.color = Color.parseColor("#673AB7")
+            curr.draw(canvas, paint)
+        }
+
+        fun update(stopcb : (Float) -> Unit) {
+            curr.update {
+                curr = curr.getNext(dir) {
+                    dir *= -1
+                }
+                stopcb(it)
+            }
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            curr.startUpdating(startcb)
+        }
+    }
 }

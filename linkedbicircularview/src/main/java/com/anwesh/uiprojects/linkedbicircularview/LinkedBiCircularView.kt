@@ -6,6 +6,7 @@ package com.anwesh.uiprojects.linkedbicircularview
 
 import android.app.Activity
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.graphics.*
 import android.view.View
 import android.view.MotionEvent
@@ -37,9 +38,10 @@ class LinkedBiCircularView(ctx : Context) : View(ctx) {
 
         fun update(stopcb : (Float) -> Unit) {
             scales[j] += 0.1f * dir
-            if (Math.abs(prevScale - prevScale) > 1) {
+            if (Math.abs(prevScale - scales[j]) > 1) {
                 scales[j]  = prevScale + dir
-                if (Math.abs(scales[j] - prevScale) > 1) {
+                j += dir.toInt()
+                if (j == scales.size || j == -1) {
                     j -= dir.toInt()
                     dir = 0f
                     prevScale = scales[j]
@@ -117,7 +119,6 @@ class LinkedBiCircularView(ctx : Context) : View(ctx) {
                 canvas.restore()
             }
             canvas.restore()
-            canvas.restore()
         }
 
         fun update(stopcb : (Float) -> Unit) {
@@ -192,6 +193,7 @@ class LinkedBiCircularView(ctx : Context) : View(ctx) {
     companion object {
         fun create(activity : Activity) : LinkedBiCircularView{
             val view : LinkedBiCircularView = LinkedBiCircularView(activity)
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
             activity.setContentView(view)
             return view
         }

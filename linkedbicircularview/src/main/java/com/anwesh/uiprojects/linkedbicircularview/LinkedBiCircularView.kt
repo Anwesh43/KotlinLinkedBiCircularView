@@ -9,6 +9,8 @@ import android.graphics.*
 import android.view.View
 import android.view.MotionEvent
 
+val LBC_NODES : Int = 5
+
 class LinkedBiCircularView(ctx : Context) : View(ctx) {
 
     private val paint : Paint = Paint(Paint.ANTI_ALIAS_FLAG)
@@ -78,4 +80,60 @@ class LinkedBiCircularView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    data class LBCNode(var i : Int, val state : State = State()) {
+
+        var next : LBCNode? = null
+
+        var prev : LBCNode? = null
+
+        init {
+            addNeighbor()
+        }
+
+        fun addNeighbor() {
+            if (i < LBC_NODES - 1) {
+                next = LBCNode(i + 1)
+                next?.prev = this
+            }
+        }
+
+        fun draw(canvas : Canvas, paint : Paint) {
+            val w : Float = canvas.width.toFloat()
+            val h : Float = canvas.height.toFloat()
+            val gap : Float = (0.9f * w / LBC_NODES)
+            paint.strokeWidth = Math.min(w, h) / 50
+            canvas.save()
+            canvas.translate(w/20 + i * gap, h / 2)
+            for (i in 0..1) {
+                canvas.save()
+                canvas.translate(gap * state.scales[1 + (i + 1) % 2], 0f)
+                canvas.drawArc(RectF(0f, -gap / 2, gap, gap / 2), 0f, 360f * state.scales[0] * (1 - state.scales[3]), false, paint)
+                canvas.restore()
+            }
+            canvas.restore()
+            canvas.restore()
+        }
+
+        fun update(stopcb : (Float) -> Unit) {
+            state.update(stopcb)
+        }
+
+        fun startUpdating(startcb : () -> Unit) {
+            state.startUpdating(startcb)
+        }
+
+        fun getNext(dir : Int, cb : () -> Unit) : LBCNode {
+            var curr : LBCNode? = prev
+            if (dir == 1) {
+                curr = next
+            }
+            if (curr != null) {
+                return curr
+            }
+            cb()
+            return this
+        }
+    }
+
 }
